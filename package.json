@@ -1,0 +1,27 @@
+{
+  "name": "FIFA-rest-api",
+  "version": "1.0.0",
+  "description": "Resp API with Node and PostgreSQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HELL0ANTHONY/FIFA-rest-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HELL0ANTHONY/FIFA-rest-api/issues"
+  },
+  "homepage": "https://github.com/HELL0ANTHONY/FIFA-rest-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
