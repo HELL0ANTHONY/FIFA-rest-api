@@ -13,7 +13,7 @@ const axiosHelper = async url => {
 
 const getPlayersFromAPI = async () => {
   try {
-    const NUMBER_OF_REQUESTS = 4;
+    const NUMBER_OF_REQUESTS = 30;
     const promisePlayers = [...Array(NUMBER_OF_REQUESTS + 1).keys()]
       .slice(1)
       .map(page => axiosHelper(baseURL(page)));
