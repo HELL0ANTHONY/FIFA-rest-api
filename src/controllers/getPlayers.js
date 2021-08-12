@@ -11,6 +11,10 @@ const getPlayers = async (req, res, next) => {
     return res.status(404).send("Page not found");
   }
 
+  if (search === undefined) {
+    return res.status(400).send("Bad Resquest");
+  }
+
   let playersOrder = "asc";
   if (order !== undefined && order.length) {
     playersOrder = order;

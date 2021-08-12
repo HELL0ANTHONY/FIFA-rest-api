@@ -11,12 +11,16 @@ const getTeams = async (req, res, next) => {
     return res.status(404).send("Page not found");
   }
 
+  if (Name === undefined) {
+    return res.status(400).send("Bad Request");
+  }
+
   const teams = await Player.findAndCountAll({
     limit: LIMIT,
     offset: page,
     where: {
       team: {
-        [Op.iLike]: Name.toLowerCase()
+        [Op.iLike]: Name.toLowerCase().trim()
       }
     }
   });
