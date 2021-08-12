@@ -2,27 +2,37 @@ const { Op } = require("sequelize");
 const Player = require("../models/player");
 
 const getPlayers = async (req, res, next) => {
-  const { Name, Page } = req.body;
-  const pageAsNumber = Number.parseInt(Page);
-  const LIMIT = 5;
-  const page = (pageAsNumber - 1) * LIMIT;
+  const { search, order, page } = req.query;
+  const pageAsNumber = Number.parseInt(page);
+  const LIMIT = 10;
+  const pageNumber = (pageAsNumber - 1) * LIMIT;
 
-  const teamPlayers = await Player.findAndCountAll({
+  if (pageNumber < 0) {
+    return res.status(404).send("Page not found");
+  }
+
+  let playersOrder = "asc";
+  if (order !== undefined && order.length) {
+    playersOrder = order;
+  }
+
+  const players = await Player.findAndCountAll({
     limit: LIMIT,
-    offset: page,
+    offset: pageNumber,
     where: {
-      team: {
-        [Op.iLike]: Name.toLowerCase()
+      name: {
+        [Op.iLike]: `%${search.toLowerCase()}%`
       }
-    }
+    },
+    order: [["name", playersOrder]]
   });
 
-  res.json({
+  return res.json({
     Page: pageAsNumber,
-    totalPages: Math.ceil(teamPlayers.count / LIMIT),
+    totalPages: Math.ceil(players.count / LIMIT),
     Items: LIMIT,
-    totalItems: teamPlayers.rows.length,
-    Players: teamPlayers.rows
+    totalItems: players.rows.length,
+    Players: players.rows
   });
 };
 
