@@ -1,7 +1,8 @@
 const axios = require("axios");
 const { baseURL } = require("../constants/constants");
+const mapData = require("./mapData");
 
-const aux = async url => {
+const axiosHelper = async url => {
   try {
     const response = await axios.get(url);
     return response.data;
@@ -12,17 +13,16 @@ const aux = async url => {
 
 const getPlayersFromAPI = async () => {
   try {
-    const NUMBER_OF_REQUESTS = 11;
-    const promisePlayers = [...Array(NUMBER_OF_REQUESTS).keys()]
+    const NUMBER_OF_REQUESTS = 4;
+    const promisePlayers = [...Array(NUMBER_OF_REQUESTS + 1).keys()]
       .slice(1)
-      .map(id => aux(baseURL(id)));
-    const players = await Promise.all(promisePlayers);
-    console.log(players);
+      .map(page => axiosHelper(baseURL(page)));
+    const dataFromAPI = await Promise.all(promisePlayers);
+    const players = dataFromAPI.map(({ items }) => items).flat();
+    return mapData(players);
   } catch (error) {
     console.log(error);
   }
 };
-// NO TE OLVIDES DE BORRAR ESTO
-getPlayersFromAPI();
 
 module.exports = getPlayersFromAPI;

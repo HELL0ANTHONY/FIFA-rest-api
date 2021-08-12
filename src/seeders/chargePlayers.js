@@ -1,10 +1,11 @@
-const { pool } = require("../db");
+const getPlayersFromAPI = require("../helpers/getPlayersFromAPI");
+const Player = require("../models/player");
 
 const chargePlayers = async () => {
-  const countResponse = await pool.query("SELECT COUNT(*) FROM players");
-  const count = Number.parseInt(countResponse.rows[0].count);
+  const count = await Player.count();
   if (!count) {
-    console.log("hello");
+    const players = await getPlayersFromAPI();
+    await Player.bulkCreate(players);
   }
 };
 
