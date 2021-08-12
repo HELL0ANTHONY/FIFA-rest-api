@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const logging = require("./helpers/logging");
-// const routes = require("./routes");
+const routes = require("./routes");
 
 const NAMESPACE = "Server";
 const server = express();
@@ -40,21 +40,21 @@ server.use((req, res, next) => {
   next();
 });
 
-// server.use("/", routes);
+server.use("/", routes);
 server.disable("etag");
 
-server.use((req, res, next) => {
-  const error = new Error("Not Found");
-  return res.status(404).json({
-    message: error.message
-  });
-});
-
-// router.use((err, req, res, next) => {
-//   const status = err.status || 500;
-//   const message = err.message || err;
-//   console.error(err);
-//   res.status(status).send(message);
+// server.use((req, res, next) => {
+//   const error = new Error("Not Found");
+//   return res.status(404).json({
+//     message: error.message
+//   });
 // });
+
+server.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || err;
+  console.error(err);
+  res.status(status).send(message);
+});
 
 module.exports = server;
