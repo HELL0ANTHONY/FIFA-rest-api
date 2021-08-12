@@ -1,16 +1,29 @@
-const { pool } = require("../models/db");
-// BORRAR DESPUES DE HACER LA PRUEBA
-const getPlayersFromAPI = require("../helpers/getPlayersFromAPI");
+const { Op } = require("sequelize");
+const Player = require("../models/player");
 
 const getPlayers = async (req, res, next) => {
-  // const { Page, Name } = req.body;
-  // const count = await pool.query("SELECT COUNT(*) FROM players");
-  // const response = await pool.query("SELECT * FROM players");
+  const { Name, Page } = req.body;
+  const pageAsNumber = Number.parseInt(Page);
+  const LIMIT = 5;
+  const page = (pageAsNumber - 1) * LIMIT;
 
-  const players = await getPlayersFromAPI();
+  const teamPlayers = await Player.findAndCountAll({
+    limit: LIMIT,
+    offset: page,
+    where: {
+      team: {
+        [Op.iLike]: Name.toLowerCase()
+      }
+    }
+  });
 
-  // return await res.json(count.rows[0].count);
-  return res.json(players);
+  res.json({
+    Page: pageAsNumber,
+    totalPages: Math.ceil(teamPlayers.count / LIMIT),
+    Items: LIMIT,
+    totalItems: teamPlayers.rows.length,
+    Players: teamPlayers.rows
+  });
 };
 
 module.exports = getPlayers;
